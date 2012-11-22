@@ -1,0 +1,18 @@
+Ada layer for Yocto
+-------------------
+
+This adds support for building Ada programs under Yocto. This is a work in
+progress and more Ada libs will be added in future.
+
+The main branch is for Denzil and GCC 4.6.
+
+To build, you need a GCC that understands Ada, this causes problems for some
+systems, i.e. on my Debian testing 64-bit, where the main compiler does not
+understand Ada and the Ada compiler has it's own gcc/g++. I was not able to
+force Yocto to build using gcc-4.6 and g++-4.6. I had to hack it by compiling
+my own GCC-4.6.3 toolchain and fixing the multiarch problems with soft links
+to crt[i1n].o and lib[cm].[a|so]. Any hints getting this to work would be
+greatly appreciated.
+
+Add thislayer into yourbuild/conf/bblayers.conf file to get it picked up by
+bitbake.

@@ -1,0 +1,19 @@
+*** gprbuild-2012-src.orig/Makefile.in	2012-01-04 15:36:14.000000000 +0000
+--- gprbuild-2012-src/Makefile.in	2012-12-18 16:25:23.886600578 +0000
+***************
+*** 19,25 ****
+  endif
+  CP=cp -p
+  MKDIR=mkdir -p
+! BUILD=debug
+  
+  prefix=@prefix@
+  srcdir=@srcdir@
+--- 19,25 ----
+  endif
+  CP=cp -p
+  MKDIR=mkdir -p
+! BUILD=production
+  
+  prefix=@prefix@
+  srcdir=@srcdir@

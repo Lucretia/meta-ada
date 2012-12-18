@@ -1,0 +1,230 @@
+*** gprbuild-2012-src.orig/gnat/scng.adb	2012-05-10 14:59:03.000000000 +0100
+--- gprbuild-2012-src/gnat/scng.adb	2012-12-18 16:38:13.722640284 +0000
+***************
+*** 1792,1838 ****
+                    Token := Tok_Comment;
+                    return;
+                 end if;
+- 
+-                --  If the SPARK restriction is set for this unit, then generate
+-                --  a token Tok_SPARK_Hide for a SPARK HIDE directive.
+- 
+-                if Restriction_Check_Required (SPARK)
+-                  and then Source (Start_Of_Comment) = '#'
+-                then
+-                   declare
+-                      Scan_SPARK_Ptr : Source_Ptr;
+- 
+-                   begin
+-                      Scan_SPARK_Ptr := Start_Of_Comment + 1;
+- 
+-                      --  Scan out blanks
+- 
+-                      while Source (Scan_SPARK_Ptr) = ' '
+-                        or else Source (Scan_SPARK_Ptr) = HT
+-                      loop
+-                         Scan_SPARK_Ptr := Scan_SPARK_Ptr + 1;
+-                      end loop;
+- 
+-                      --  Recognize HIDE directive. SPARK input cannot be
+-                      --  encoded as wide characters, so only deal with
+-                      --  lower/upper case.
+- 
+-                      if (Source (Scan_SPARK_Ptr) = 'h'
+-                           or else Source (Scan_SPARK_Ptr) = 'H')
+-                        and then (Source (Scan_SPARK_Ptr + 1) = 'i'
+-                                   or else Source (Scan_SPARK_Ptr + 1) = 'I')
+-                        and then (Source (Scan_SPARK_Ptr + 2) = 'd'
+-                                   or else Source (Scan_SPARK_Ptr + 2) = 'D')
+-                        and then (Source (Scan_SPARK_Ptr + 3) = 'e'
+-                                   or else Source (Scan_SPARK_Ptr + 3) = 'E')
+-                        and then (Source (Scan_SPARK_Ptr + 4) = ' '
+-                                   or else Source (Scan_SPARK_Ptr + 4) = HT)
+-                      then
+-                         Token := Tok_SPARK_Hide;
+-                         return;
+-                      end if;
+-                   end;
+-                end if;
+              end if;
+           end Minus_Case;
+  
+--- 1792,1797 ----
+*** gprbuild-2012-src.orig/gnat/restrict.adb	2012-05-10 14:59:03.000000000 +0100
+--- gprbuild-2012-src/gnat/restrict.adb	2012-12-18 16:37:40.726638582 +0000
+***************
+*** 143,200 ****
+        N     : Node_Id;
+        Force : Boolean := False)
+     is
+!       Msg_Issued          : Boolean;
+!       Save_Error_Msg_Sloc : Source_Ptr;
+     begin
+!       if Force or else Comes_From_Source (Original_Node (N)) then
+! 
+!          if Restriction_Check_Required (SPARK)
+!            and then Is_In_Hidden_Part_In_SPARK (Sloc (N))
+!          then
+!             return;
+!          end if;
+! 
+!          --  Since the call to Restriction_Msg from Check_Restriction may set
+!          --  Error_Msg_Sloc to the location of the pragma restriction, save and
+!          --  restore the previous value of the global variable around the call.
+! 
+!          Save_Error_Msg_Sloc := Error_Msg_Sloc;
+!          Check_Restriction (Msg_Issued, SPARK, First_Node (N));
+!          Error_Msg_Sloc := Save_Error_Msg_Sloc;
+! 
+!          if Msg_Issued then
+!             Error_Msg_F ("\\| " & Msg, N);
+!          end if;
+!       end if;
+     end Check_SPARK_Restriction;
+  
+     procedure Check_SPARK_Restriction (Msg1, Msg2 : String; N : Node_Id) is
+!       Msg_Issued          : Boolean;
+!       Save_Error_Msg_Sloc : Source_Ptr;
+     begin
+!       pragma Assert (Msg2'Length /= 0 and then Msg2 (Msg2'First) = '\');
+! 
+!       if Comes_From_Source (Original_Node (N)) then
+! 
+!          if Restriction_Check_Required (SPARK)
+!            and then Is_In_Hidden_Part_In_SPARK (Sloc (N))
+!          then
+!             return;
+!          end if;
+! 
+!          --  Since the call to Restriction_Msg from Check_Restriction may set
+!          --  Error_Msg_Sloc to the location of the pragma restriction, save and
+!          --  restore the previous value of the global variable around the call.
+! 
+!          Save_Error_Msg_Sloc := Error_Msg_Sloc;
+!          Check_Restriction (Msg_Issued, SPARK, First_Node (N));
+!          Error_Msg_Sloc := Save_Error_Msg_Sloc;
+! 
+!          if Msg_Issued then
+!             Error_Msg_F ("\\| " & Msg1, N);
+!             Error_Msg_F (Msg2, N);
+!          end if;
+!       end if;
+     end Check_SPARK_Restriction;
+  
+     --------------------------------
+--- 143,159 ----
+        N     : Node_Id;
+        Force : Boolean := False)
+     is
+!       pragma Unreferenced (Msg, N, Force);
+     begin
+!       --  gcc-ada doesn't define SPARK in All_Restrictions.
+!       null;
+     end Check_SPARK_Restriction;
+  
+     procedure Check_SPARK_Restriction (Msg1, Msg2 : String; N : Node_Id) is
+!       pragma Unreferenced (Msg1, Msg2, N);
+     begin
+!       --  gcc-ada doesn't define SPARK in All_Restrictions.
+!       null;
+     end Check_SPARK_Restriction;
+  
+     --------------------------------
+***************
+*** 202,272 ****
+     --------------------------------
+  
+     procedure Check_No_Implicit_Aliasing (Obj : Node_Id) is
+!       E : Entity_Id;
+! 
+     begin
+!       --  If restriction not active, nothing to check
+! 
+!       if not Restriction_Active (No_Implicit_Aliasing) then
+!          return;
+!       end if;
+! 
+!       --  If we have an entity name, check entity
+! 
+!       if Is_Entity_Name (Obj) then
+!          E := Entity (Obj);
+! 
+!          --  Restriction applies to entities that are objects
+! 
+!          if Is_Object (E) then
+!             if Is_Aliased (E) then
+!                return;
+! 
+!             elsif Present (Renamed_Object (E)) then
+!                Check_No_Implicit_Aliasing (Renamed_Object (E));
+!                return;
+!             end if;
+! 
+!          --  If we don't have an object, then it's OK
+! 
+!          else
+!             return;
+!          end if;
+! 
+!       --  For selected component, check selector
+! 
+!       elsif Nkind (Obj) = N_Selected_Component then
+!          Check_No_Implicit_Aliasing (Selector_Name (Obj));
+!          return;
+! 
+!       --  Indexed component is OK if aliased components
+! 
+!       elsif Nkind (Obj) = N_Indexed_Component then
+!          if Has_Aliased_Components (Etype (Prefix (Obj)))
+!            or else
+!              (Is_Access_Type (Etype (Prefix (Obj)))
+!                and then Has_Aliased_Components
+!                           (Designated_Type (Etype (Prefix (Obj)))))
+!          then
+!             return;
+!          end if;
+! 
+!       --  For type conversion, check converted expression
+! 
+!       elsif Nkind_In (Obj, N_Unchecked_Type_Conversion, N_Type_Conversion) then
+!          Check_No_Implicit_Aliasing (Expression (Obj));
+!          return;
+! 
+!       --  Explicit dereference is always OK
+! 
+!       elsif Nkind (Obj) = N_Explicit_Dereference then
+!          return;
+!       end if;
+! 
+!       --  If we fall through, then we have an aliased view that does not meet
+!       --  the rules for being explicitly aliased, so issue restriction msg.
+! 
+!       Check_Restriction (No_Implicit_Aliasing, Obj);
+     end Check_No_Implicit_Aliasing;
+  
+     -----------------------------------------
+--- 161,170 ----
+     --------------------------------
+  
+     procedure Check_No_Implicit_Aliasing (Obj : Node_Id) is
+!       pragma Unreferenced (Obj);
+     begin
+!       --  GCC 4.6.3 does not have No_Implicit_Aliasing, from 4.7 onwards.
+!       null;
+     end Check_No_Implicit_Aliasing;
+  
+     -----------------------------------------
+***************
+*** 929,939 ****
+           Name_Buffer (1 .. S'Last) := S;
+           Name_Len := S'Length;
+  
+-          if R = SPARK then
+-             Set_All_Upper_Case;
+-          else
+              Set_Casing (Identifier_Casing (Get_Source_File_Index (Sloc (N))));
+-          end if;
+  
+           Error_Msg_Strlen := Name_Len;
+           Error_Msg_String (1 .. Name_Len) := Name_Buffer (1 .. Name_Len);
+--- 827,833 ----

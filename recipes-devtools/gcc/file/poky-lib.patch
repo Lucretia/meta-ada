@@ -1,0 +1,110 @@
+diff -rcN ada.orig/gcc-interface/Makefile.in ada/gcc-interface/Makefile.in
+*** ada.orig/gcc-interface/Makefile.in	2013-01-15 07:26:20.000000000 +0100
+--- ada/gcc-interface/Makefile.in	2013-01-15 07:33:23.000000000 +0100
+***************
+*** 1863,1871 ****
+      system.ads<system-linux-armel.ads
+    endif
+  
+!   TOOLS_TARGET_PAIRS =  \
+!     mlib-tgt-specific.adb<mlib-tgt-specific-linux.adb \
+!     indepsw.adb<indepsw-gnu.adb
+  
+    EXTRA_GNATRTL_TASKING_OBJS=s-linux.o
+    EH_MECHANISM=
+--- 1863,1877 ----
+      system.ads<system-linux-armel.ads
+    endif
+  
+!   ifeq ($(strip $(filter-out poky,$(manu))),)
+!     TOOLS_TARGET_PAIRS =  \
+!       mlib-tgt-specific.adb<mlib-tgt-specific-linux-poky.adb \
+!       indepsw.adb<indepsw-gnu.adb
+!   else
+!     TOOLS_TARGET_PAIRS =  \
+!       mlib-tgt-specific.adb<mlib-tgt-specific-linux.adb \
+!       indepsw.adb<indepsw-gnu.adb
+!   endif
+  
+    EXTRA_GNATRTL_TASKING_OBJS=s-linux.o
+    EH_MECHANISM=
+diff -rcN ada.orig/mlib-tgt-specific-linux-poky.adb ada/mlib-tgt-specific-linux-poky.adb
+*** ada.orig/mlib-tgt-specific-linux-poky.adb	1970-01-01 01:00:00.000000000 +0100
+--- ada/mlib-tgt-specific-linux-poky.adb	2013-01-15 07:24:59.000000000 +0100
+***************
+*** 0 ****
+--- 1,74 ----
++ ------------------------------------------------------------------------------
++ --                                                                          --
++ --                         GNAT COMPILER COMPONENTS                         --
++ --                                                                          --
++ --                    M L I B . T G T . S P E C I F I C                     --
++ --                           (GNU/Linux Version)                            --
++ --                                                                          --
++ --                                 B o d y                                  --
++ --                                                                          --
++ --          Copyright (C) 2001-2008, Free Software Foundation, Inc.         --
++ --                                                                          --
++ -- GNAT is free software;  you can  redistribute it  and/or modify it under --
++ -- terms of the  GNU General Public License as published  by the Free Soft- --
++ -- ware  Foundation;  either version 3,  or (at your option) any later ver- --
++ -- sion.  GNAT is distributed in the hope that it will be useful, but WITH- --
++ -- OUT ANY WARRANTY;  without even the  implied warranty of MERCHANTABILITY --
++ -- or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License --
++ -- for  more details.  You should have  received  a copy of the GNU General --
++ -- Public License  distributed with GNAT; see file COPYING3.  If not, go to --
++ -- http://www.gnu.org/licenses for a complete copy of the license.          --
++ --                                                                          --
++ -- GNAT was originally developed  by the GNAT team at  New York University. --
++ -- Extensive contributions were provided by Ada Core Technologies Inc.      --
++ --                                                                          --
++ ------------------------------------------------------------------------------
++ 
++ --  This is the GNU/Linux version of the body
++ 
++ with MLib.Fil;
++ with MLib.Utl;
++ with Opt;
++ with Output; use Output;
++ 
++ package body MLib.Tgt.Specific is
++ 
++    use MLib;
++ 
++    --  Non default subprograms
++ 
++    procedure Build_Dynamic_Library
++      (Ofiles       : Argument_List;
++       Options      : Argument_List;
++       Interfaces   : Argument_List;
++       Lib_Filename : String;
++       Lib_Dir      : String;
++       Symbol_Data  : Symbol_Record;
++       Driver_Name  : Name_Id := No_Name;
++       Lib_Version  : String  := "";
++       Auto_Init    : Boolean := False);
++ 
++    function Is_Archive_Ext (Ext : String) return Boolean;
++ 
++    --------------------
++    -- Is_Archive_Ext --
++    --------------------
++ 
++    function Is_Archive_Ext (Ext : String) return Boolean is
++    begin
++       return Ext = ".a";
++    end Is_Archive_Ext;
++ 
++    ---------------------------
++    -- Support_For_Libraries --
++    ---------------------------
++ 
++    function Support_For_Libraries return Library_Support is
++    begin
++       return Static_Only;
++    end Support_For_Libraries;
++ 
++ begin
++    Is_Archive_Ext_Ptr := Is_Archive_Ext'Access;
++    Support_For_Libraries_Ptr := Support_For_Libraries'Access
++ end MLib.Tgt.Specific;

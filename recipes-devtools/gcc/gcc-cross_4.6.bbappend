@@ -4,7 +4,11 @@ ADA := ",ada"
 
 LANGUAGES .= "${ADA}"
 
-SRC_URI .= "file://poky-lib.patch"
+FILESEXTRAPATHS_prepend := "${THISDIR}/file:"
+
+#SRC_URI .= "file://poky-lib.patch"
+
+SRC_URI += "file://arm-linux-gnat.patch file://poky-lib.patch"
 
 # Should the above have ADA_arm[eb]|mips[el]|etc. as in gcc-configure-common.inc?
 

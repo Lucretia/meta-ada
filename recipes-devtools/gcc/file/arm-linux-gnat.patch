@@ -1,13 +1,14 @@
-*** gcc-4_6-branch/gnattools/configure	2011-09-03 04:03:56.000000000 +0100
---- gcc/gnattools/configure	2012-12-15 01:01:05.166371433 +0000
+*** gcc-4_6-branch/gnattools/configure.orig	2013-01-15 22:01:56.000000000 +0100
+--- gcc-4_6-branch/gnattools/configure	2013-01-15 22:03:04.000000000 +0100
 ***************
 *** 2111,2116 ****
---- 2111,2119 ----
+--- 2111,2120 ----
       mlib-tgt-specific.adb<mlib-tgt-specific-lynxos.adb \
       indepsw.adb<indepsw-gnu.adb"
       ;;
-+   arm*-poky-*-linux*)
-+     TOOLS_TARGET_PAIRS="mlib-tgt-specific.adb<mlib-tgt-specific-linux-poky.adb"
++   arm-poky-linux*)
++     TOOLS_TARGET_PAIRS="mlib-tgt-specific.adb<mlib-tgt-specific-linux-poky.adb \
++     indepsw.adb<indepsw-gnu.adb"
 +     ;;
   esac
   

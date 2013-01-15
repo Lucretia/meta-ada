@@ -1,6 +1,6 @@
 diff -rcN ada.orig/gcc-interface/Makefile.in ada/gcc-interface/Makefile.in
-*** ada.orig/gcc-interface/Makefile.in	2013-01-15 07:26:20.000000000 +0100
---- ada/gcc-interface/Makefile.in	2013-01-15 07:33:23.000000000 +0100
+*** gcc.orig/gcc/ada/gcc-interface/Makefile.in	2013-01-15 07:26:20.000000000 +0100
+--- gcc/gcc/ada/gcc-interface/Makefile.in	2013-01-15 07:33:23.000000000 +0100
 ***************
 *** 1863,1871 ****
       system.ads<system-linux-armel.ads
@@ -29,11 +29,11 @@ diff -rcN ada.orig/gcc-interface/Makefile.in ada/gcc-interface/Makefile.in
     EXTRA_GNATRTL_TASKING_OBJS=s-linux.o
     EH_MECHANISM=
 diff -rcN ada.orig/mlib-tgt-specific-linux-poky.adb ada/mlib-tgt-specific-linux-poky.adb
-*** ada.orig/mlib-tgt-specific-linux-poky.adb	1970-01-01 01:00:00.000000000 +0100
---- ada/mlib-tgt-specific-linux-poky.adb	2013-01-15 07:24:59.000000000 +0100
+*** gcc.orig/gcc/ada/mlib-tgt-specific-linux-poky.adb	1970-01-01 01:00:00.000000000 +0100
+--- gcc/gcc/ada/mlib-tgt-specific-linux-poky.adb	2013-01-15 07:24:59.000000000 +0100
 ***************
 *** 0 ****
---- 1,74 ----
+--- 1,88 ----
 + ------------------------------------------------------------------------------
 + --                                                                          --
 + --                         GNAT COMPILER COMPONENTS                         --
@@ -62,10 +62,8 @@ diff -rcN ada.orig/mlib-tgt-specific-linux-poky.adb ada/mlib-tgt-specific-linux-
 + 
 + --  This is the GNU/Linux version of the body
 + 
-+ with MLib.Fil;
-+ with MLib.Utl;
-+ with Opt;
-+ with Output; use Output;
++ with Sdefault;
++ with Types; use Types;
 + 
 + package body MLib.Tgt.Specific is
 + 
@@ -73,27 +71,41 @@ diff -rcN ada.orig/mlib-tgt-specific-linux-poky.adb ada/mlib-tgt-specific-linux-
 + 
 +    --  Non default subprograms
 + 
-+    procedure Build_Dynamic_Library
-+      (Ofiles       : Argument_List;
-+       Options      : Argument_List;
-+       Interfaces   : Argument_List;
-+       Lib_Filename : String;
-+       Lib_Dir      : String;
-+       Symbol_Data  : Symbol_Record;
-+       Driver_Name  : Name_Id := No_Name;
-+       Lib_Version  : String  := "";
-+       Auto_Init    : Boolean := False);
++    function Get_Target_Prefix return String;
++    function Archive_Builder return String;
++    function Archive_Indexer return String;
++    function Support_For_Libraries return Library_Support;
 + 
-+    function Is_Archive_Ext (Ext : String) return Boolean;
++    -----------------------
++    -- Get_Target_Prefix --
++    -----------------------
 + 
-+    --------------------
-+    -- Is_Archive_Ext --
-+    --------------------
++    function Get_Target_Prefix return String is
++       Target_Name : constant String_Ptr := Sdefault.Target_Name;
 + 
-+    function Is_Archive_Ext (Ext : String) return Boolean is
 +    begin
-+       return Ext = ".a";
-+    end Is_Archive_Ext;
++       --  Target_name is the program prefix without '-' but with a trailing '/'
++ 
++       return Target_Name (Target_Name'First .. Target_Name'Last - 1) & '-';
++    end Get_Target_Prefix;
++ 
++    ---------------------
++    -- Archive_Builder --
++    ---------------------
++
++    function Archive_Builder return String is
++    begin
++       return Get_Target_Prefix & "ar";
++    end Archive_Builder;
++ 
++    ---------------------
++    -- Archive_Indexer --
++    ---------------------
++ 
++    function Archive_Indexer return String is
++    begin
++       return Get_Target_Prefix & "ranlib";
++    end Archive_Indexer;
 + 
 +    ---------------------------
 +    -- Support_For_Libraries --
@@ -106,5 +118,7 @@ diff -rcN ada.orig/mlib-tgt-specific-linux-poky.adb ada/mlib-tgt-specific-linux-
 + 
 + begin
 +    Is_Archive_Ext_Ptr := Is_Archive_Ext'Access;
-+    Support_For_Libraries_Ptr := Support_For_Libraries'Access
++    Archive_Builder_Ptr := Archive_Builder'Access;
++    Archive_Indexer_Ptr := Archive_Indexer'Access;
++    Support_For_Libraries_Ptr := Support_For_Libraries'Access;
 + end MLib.Tgt.Specific;

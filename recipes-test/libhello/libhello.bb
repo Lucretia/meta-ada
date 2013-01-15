@@ -14,7 +14,7 @@ SRC_URI = "file://libhello.ads file://libhello.adb file://libhello.gpr file://bu
 # /usr/lib/libhello.a
 # /usr/lib/libhello.so
 
-PACKAGES = "${PN}-dbg ${PN}-dev"
+PACKAGES = "${PN}-dev"
 
 #FILES_${PN} = "${bindir}/*"
 
@@ -25,7 +25,7 @@ FILES_${PN}-dev = "${libdir}/* ${libdir}/ada/${PN}/*"
 S = "${WORKDIR}"
 
 do_compile() {
-	${TARGET_PREFIX}gnatmake -vl -p -Pbuild_libhello.gpr
+	${TARGET_PREFIX}gnatmake -p -Pbuild_libhello.gpr
 }
 
 do_install() {
@@ -34,10 +34,10 @@ do_install() {
 	install -d ${D}${libdir}/ada/libhello
 	install -d ${D}${libdir}/ada/libhello/adainclude
 	install -d ${D}${libdir}/ada/libhello/adalib
-	install -m 0644 libhello.gpr ${D}${libdir}/ada/libhello
-	install -m 0644 libhello.ads ${D}${libdir}/ada/libhello/adainclude
-	install -m 0644 lib/libhello.ali ${D}${libdir}/ada/libhello/adalib
-	#install -m 0644 libhello.a ${D}${libdir}
-	install -m 0755 lib/libhello.so.1 ${D}${libdir}
-	install -m 0777 lib/libhello.so ${D}${libdir}
+	install -m 0644 libhello.gpr ${D}${libdir}/ada/${PN}
+	install -m 0644 libhello.ads ${D}${libdir}/ada/${PN}/adainclude
+	install -m 0644 lib/libhello.ali ${D}${libdir}/ada/${PN}/adalib
+	install -m 0644 lib/libhello.a ${D}${libdir}/ada/${PN}/adalib
+#	install -m 0755 lib/libhello.so.1 ${D}${libdir}
+#	install -m 0777 lib/libhello.so ${D}${libdir}
 }

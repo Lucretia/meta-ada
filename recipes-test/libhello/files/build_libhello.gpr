@@ -1,0 +1,8 @@
+Library Project Build_Libhello is
+   Version := "1";
+   for Source_Dirs use (".");
+   for Library_Dir use "lib";
+   for Library_Name use "libhello";
+   for Library_Kind use "dynamic";
+   for Library_Version use "libhello.so." & Version;
+end Build_Libhello;

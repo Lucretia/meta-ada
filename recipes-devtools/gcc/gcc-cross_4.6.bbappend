@@ -4,6 +4,8 @@ ADA := ",ada"
 
 LANGUAGES .= "${ADA}"
 
+SRC_URI .= "file://poky-lib.patch"
+
 # Should the above have ADA_arm[eb]|mips[el]|etc. as in gcc-configure-common.inc?
 
 # Modelled after gcc-package-target.inc
@@ -11,6 +13,8 @@ PACKAGES += "\
   gnat gnat-symlinks \
   gnat-dev \
 "
+
+#EXTRA_OECONF += "--enable-libada --enable-static=libada"
 
 FILES_gnat = "\
   ${bindir}/${TARGET_PREFIX}gnat \

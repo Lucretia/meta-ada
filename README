@@ -16,3 +16,9 @@ greatly appreciated.
 
 Add thislayer into yourbuild/conf/bblayers.conf file to get it picked up by
 bitbake.
+
+Add the following into conf/local.conf:
+
+BBMASK = "gprbuild|xmlada"
+
+as they don't build.

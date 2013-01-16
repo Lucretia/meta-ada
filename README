@@ -22,3 +22,6 @@ Add the following into conf/local.conf:
 BBMASK = "gprbuild|xmlada"
 
 as they don't build.
+
+
+** This build will not build shared libs under Yocto/Poky

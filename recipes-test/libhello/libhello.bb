@@ -31,13 +31,17 @@ do_compile() {
 do_install() {
 	install -d ${D}${libdir}
 	install -d ${D}${libdir}/ada
-	install -d ${D}${libdir}/ada/libhello
-	install -d ${D}${libdir}/ada/libhello/adainclude
-	install -d ${D}${libdir}/ada/libhello/adalib
+	install -d ${D}${libdir}/ada/${PN}
+	install -d ${D}${libdir}/ada/${PN}/adainclude
+	install -d ${D}${libdir}/ada/${PN}/adalib
 	install -m 0644 libhello.gpr ${D}${libdir}/ada/${PN}
 	install -m 0644 libhello.ads ${D}${libdir}/ada/${PN}/adainclude
 	install -m 0644 lib/libhello.ali ${D}${libdir}/ada/${PN}/adalib
 	install -m 0644 lib/libhello.a ${D}${libdir}/ada/${PN}/adalib
 #	install -m 0755 lib/libhello.so.1 ${D}${libdir}
 #	install -m 0777 lib/libhello.so ${D}${libdir}
+
+	# At the end of the build add in the project to the GPR path with the colon at the end ready for more.
+	GPR_PROJECT_PATH .= ":${D}${libdir}/ada/${PN}"
 }
+

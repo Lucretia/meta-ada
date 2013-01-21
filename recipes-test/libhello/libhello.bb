@@ -6,6 +6,10 @@ PR = "r0"
 
 SRC_URI = "file://libhello.ads file://libhello.adb file://libhello.gpr file://build_libhello.gpr"
 
+#GPR_PROJECT_PATH .= ":${D}${libdir}/ada/${PN}"
+
+#export GPR_PROJECT_PATH
+
 # Install the files as:
 #
 # /usr/lib/ada/libhello/adainclude/libhello.ads
@@ -40,8 +44,4 @@ do_install() {
 	install -m 0644 lib/libhello.a ${D}${libdir}/ada/${PN}/adalib
 #	install -m 0755 lib/libhello.so.1 ${D}${libdir}
 #	install -m 0777 lib/libhello.so ${D}${libdir}
-
-	# At the end of the build add in the project to the GPR path with the colon at the end ready for more.
-	GPR_PROJECT_PATH .= ":${D}${libdir}/ada/${PN}"
 }
-

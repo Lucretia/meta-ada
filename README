@@ -14,14 +14,25 @@ my own GCC-4.6.3 toolchain and fixing the multiarch problems with soft links
 to crt[i1n].o and lib[cm].[a|so]. Any hints getting this to work would be
 greatly appreciated.
 
-Add thislayer into yourbuild/conf/bblayers.conf file to get it picked up by
-bitbake.
+** This build will not build shared libs under Yocto/Poky
 
-Add the following into conf/local.conf:
+See recipes-test/libhello to see how to build a library under Yocto, and see
+recipes-test/hello so see how to use it under Yocto.
 
+Add the following the build/conf/local.conf
+-------------------------------------------
+
+# These do not build yet.
 BBMASK = "gprbuild|xmlada"
 
-as they don't build.
+# Delete the work directories after a successful build.
+INHERIT = "rm_work"
 
+# Can delete this once you have a working Yocto.
+IMAGE_INSTALL_append = " hello"
 
-** This build will not build shared libs under Yocto/Poky
+# Add to the following variable to make the Ada projects available to gnatmake:
+GPR_PROJECT_PATH = "${STAGING_LIBDIR}/ada/libhello"
+#GPR_PROJECT_PATH .= ":${STAGING_LIBDIR}/ada/<project name>"
+export GPR_PROJECT_PATH
+

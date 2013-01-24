@@ -33,7 +33,7 @@ ln -s /usr/bin/gcc-4.6 gcc
 ln -s /usr/bin/g++-4.6 g++
 ln -s /usr/bin/cpp-4.6 cpp
 
-export=/opt/gnat-4.6-links/bin:$PATH
+export PATH=/opt/gnat-4.6-links/bin:${PATH}
 
 N.B: Do not export a link to ld but using gcc-4.6 as this will fail to build
 due to specific ld flags being passed into gcc which it won't understand.

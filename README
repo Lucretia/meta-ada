@@ -27,13 +27,13 @@ stock gcc and also a different version, you have to make sure Yocto will
 use the correct compilers. I create a new directory with links and then
 export those in my path:
 
-mkdir -p /opt/gnat-4.6-links/bin
-cd /opt/gnat-4.6-links/bin
-ln -s /usr/bin/gcc-4.6 gcc
-ln -s /usr/bin/g++-4.6 g++
-ln -s /usr/bin/cpp-4.6 cpp
+sudo mkdir -p /opt/gnat-4.6-links/bin
+sudo cd /opt/gnat-4.6-links/bin
+sudo ln -s /usr/bin/gcc-4.6 gcc
+sudo ln -s /usr/bin/g++-4.6 g++
+sudo ln -s /usr/bin/cpp-4.6 cpp
 
-export=/opt/gnat-4.6-links/bin:$PATH
+export PATH=/opt/gnat-4.6-links/bin:${PATH}
 
 N.B: Do not export a link to ld but using gcc-4.6 as this will fail to build
 due to specific ld flags being passed into gcc which it won't understand.

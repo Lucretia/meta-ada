@@ -38,6 +38,18 @@ export PATH=/opt/gnat-4.6-links/bin:$PATH
 N.B: Do not export a link to ld but using gcc-4.6 as this will fail to build
 due to specific ld flags being passed into gcc which it won't understand.
 
+If you get an error complaining that the compiler driver cannot find the
+gnat1 compiler, add the following link to the above directory:
+
+sudo ln -s /usr/lib/gcc/x86_64-linux-gnu/4.6/gnat1 gnat1
+
+Add meta-ada into the build/conf/bblayers.conf
+----------------------------------------------
+
+  <path-to>/yocto/gumstix/poky/meta-gumstix \
+  <path-to>/yocto/gumstix/poky/meta-ada \
+  "
+
 Add the following the build/conf/local.conf
 -------------------------------------------
 

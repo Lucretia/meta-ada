@@ -1,10 +1,10 @@
 Library Project Libhello is
    --Version := "1";
    for Library_Name use "hello";
-   for Library_Dir use ".";
+   for Library_Dir use "adalib";
    for Library_Kind use "static";
    -- for Library_Version use "libhello.so." & Version;
    for Source_Dirs use ("adainclude");
-   --  for Library_ALI_Dir use "/usr/lib/ada/libhello/adalib";
+   for Library_ALI_Dir use "adalib";
    for Externally_Built use "true";
 end Libhello;

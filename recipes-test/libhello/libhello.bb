@@ -46,3 +46,8 @@ do_install() {
 #	install -m 0755 lib/libhello.so.1 ${D}${libdir}
 #	install -m 0777 lib/libhello.so ${D}${libdir}
 }
+
+do_clean() {
+	${TARGET_PREFIX}gnatclean -Pbuild_libhello.gpr
+}
+

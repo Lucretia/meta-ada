@@ -18,3 +18,7 @@ do_install() {
 	install -m 0755 hello ${D}${bindir}
 }
 
+do_clean() {
+	${TARGET_PREFIX}gnatclean -Phello.gpr
+}
+
